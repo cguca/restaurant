@@ -4,6 +4,19 @@ let restaurants,
 var newMap
 var markers = []
 
+/*
+Add service worker
+*/
+if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/serviceworker.js')
+  /*    .then(function(){
+        console.log('Service worker is registered');
+      }) */
+      .catch(function(err) {
+        console.log(err);
+      });
+}
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -178,6 +191,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  more.tabIndex='3'
   li.append(more)
 
   return li
