@@ -1,7 +1,9 @@
+let staticCacheName = 'restaurant-static-v1';
+
 self.addEventListener('install', function(event) {
   console.log('Install the serviceWorker in the serviceworker.js file');
   event.waitUntil(
-    caches.open('restaurant-static-v1').then(function(cache) {
+    caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
         '/',
         '/index.html',
@@ -27,7 +29,19 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('activate', function(event) {
-  console.log('activating in the serviceworker.js');
+  event.waitUntil(
+		caches.keys()
+		.then(function(cacheNames) {
+			return Promise.all(
+				cacheNames.filter(function(cacheName) {
+					return cacheName.startsWith('restaurant-') &&
+						   cacheName != staticCacheName;
+				}).map(function(cacheName) {
+					return caches.delete(cacheName);
+				})
+			);
+		})
+	);
 });
 
 self.addEventListener('fetch', function(event) {
